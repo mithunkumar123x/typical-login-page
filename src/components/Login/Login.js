@@ -14,17 +14,28 @@ const Login = (props) => {
   const [formIsValid, setFormIsValid] = useState(false);
 
  useEffect( () => {
-  setFormIsValid(
-    enteredEmail.includes('@') && enteredPassword.trim().length  > 6 && enteredCollegeName.trim() !== ''
-  );
- },[enteredEmail,enteredPassword,enteredCollegeName]);
-
+  const identifier = setTimeout( () => {
+    console.log('checking form validity!');
+    setFormIsValid(
+      enteredEmail.includes('@') && enteredPassword.trim().length > 6 
+    );
+  } , 500) 
+  return () => {
+    console.log('CLEANUP');
+    clearTimeout(identifier);
+  };
+ },[enteredEmail,enteredPassword])
+  
   const emailChangeHandler = (event) => {
     setEnteredEmail(event.target.value);
   };
 
   const passwordChangeHandler = (event) => {
     setEnteredPassword(event.target.value);
+  };
+
+  const collegeNameChangeHandler = (event) => {
+    setEnteredCollegeName(event.target.value)
   };
 
   const validateEmailHandler = () => {
@@ -35,17 +46,13 @@ const Login = (props) => {
     setPasswordIsValid(enteredPassword.trim().length > 6);
   };
 
-  const collegeNameChangeHandler = (event) => {
-    setEnteredCollegeName(event.target.value)
-  };
-
   const validateCollegeNameHandler = () => {
     setCollegeNameIsValid(enteredCollegeName.trim()  !== '');
   };
 
   const submitHandler = (event) => {
     event.preventDefault();
-    props.onLogin(enteredEmail, enteredPassword);
+    props.onLogin(enteredEmail, enteredPassword , enteredCollegeName);
   };
 
   return (
@@ -78,6 +85,7 @@ const Login = (props) => {
             onChange={passwordChangeHandler}
             onBlur={validatePasswordHandler}
           />
+        
           <label htmlFor="collegeName">College Name</label>
           <input
           type="text"
